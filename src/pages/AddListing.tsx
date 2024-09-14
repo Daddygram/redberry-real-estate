@@ -1,39 +1,14 @@
-import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
 import ButtonSecondary from "../components/ButtonSecondary";
 import ButtonPrimary from "../components/ButtonPrimary";
+import { City, Region } from "../lib/types";
+import { useFormLogic } from "../hooks.tsx/useFormLogic";
+import { useFileUpload } from "../hooks.tsx/useFileUpload";
 
-type Region = {
-    id: number;
-    name: string;
-};
 
-type City = {
-    id: number;
-    name: string;
-    region_id: number;
-};
-
-type Inputs = {
-    is_rental: number;
-    address: string;
-    zip_code: string;
-    region: string;
-    city: string;
-    price: number;
-    area: number;
-    bedrooms: number;
-    description: string;
-    image: string;
-}
 
 const AddListing = () => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors, isSubmitted },
-    } = useForm<Inputs>();
+    const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } = useFormLogic();
     
     const [regions, setRegions] = useState<Region[]>([]);
     const [cities, setCities] = useState<City[]>([]);
@@ -95,42 +70,7 @@ const AddListing = () => {
         setShowCityOptions(false);
     };
 
-    const [imagePreview, setImagePreview] = useState<string>('');
-    const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
-
-    // Type the event as React.ChangeEvent<HTMLInputElement>
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const fileInput = e.target;
-        if (fileInput.files && fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-
-            // Create a preview of the uploaded image
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setImagePreview(event.target?.result as string);
-                setIsPreviewVisible(true);
-            };
-            reader.readAsDataURL(file);
-
-            // Only keep the first file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-        }
-    };
-
-    // Type the event as React.MouseEvent<SVGSVGElement>
-    const handleDelete = () => {
-        setImagePreview('');
-        setIsPreviewVisible(false);
-        // Clear the file input value
-        const fileInput = document.getElementById('image') as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = '';  // Clear the file input value
-        }
-    };
-
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+    const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
 
     return (
     <div className="mt-[62px] max-w-[790px] mx-auto text-black">
@@ -157,12 +97,12 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="location" className="font-medium text-sm leading-[1.05rem]">მისამართი *</label>
                     <input {...register("address", { required: true, minLength: 2 })} 
-                        type="text" id="location" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.address ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md`}/>
+                        type="text" id="location" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.address ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                     <div className="mt-1 flex items-center gap-[7px]">
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.address ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <p className={`text-sm leading-[1.05rem] ${errors.address ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                        <p className={`text-sm leading-[1.05rem] ${errors.address ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                             მინიმუმ ორი სიმბოლო
                         </p>
                     </div>
@@ -172,12 +112,12 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="postId" className="font-medium text-sm leading-[1.05rem]">საფოსტო ინდექსი *</label>
                     <input {...register("zip_code", { required: true, pattern: /^[0-9]+$/})} 
-                        type="text" id="postId" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.zip_code ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md`}/>
+                        type="text" id="postId" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.zip_code ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                     <div className="mt-1 flex items-center gap-[7px]">
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.zip_code ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <p className={`text-sm leading-[1.05rem] ${errors.zip_code ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                        <p className={`text-sm leading-[1.05rem] ${errors.zip_code ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                             მხოლოდ რიცხვები
                         </p>
                     </div>
@@ -187,7 +127,7 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="region" className="font-medium text-sm leading-[1.05rem]">რეგიონი</label>
                     <div className="select-menu w-full relative">
-                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.region ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-lg cursor-pointer`}
+                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.region ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
                             onClick={() => setShowRegionOptions(!showRegionOptions)}>
                             <span className="text-sm leading-4 text-black">{selectedRegion || "აირჩიეთ რეგიონი"}</span>
                             <svg className={`cityChevron transition-all duration-100 ${showRegionOptions ? 'rotate-180' : ''}`} width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -217,7 +157,7 @@ const AddListing = () => {
                         />
                     </div>
                     {errors.region && (
-                        <span className="text-red text-sm">რეგიონის არჩევა აუცილებელია</span>
+                        <span className="text-redPrimary text-sm">რეგიონის არჩევა აუცილებელია</span>
                     )}
                 </div>
 
@@ -225,7 +165,7 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="city" className="font-medium text-sm leading-[1.05rem]">ქალაქი</label>
                     <div className="select-menu w-full relative">
-                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.city ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-lg cursor-pointer`}
+                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.city ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
                             onClick={() => setShowCityOptions(!showCityOptions)}
                         >
                         <span className="text-sm leading-4 text-black">{selectedCity || "აირჩიეთ ქალაქი"}</span>
@@ -257,7 +197,7 @@ const AddListing = () => {
                         />
                     </div>
                     {errors.city && (
-                        <span className="text-red text-sm">ქალაქის არჩევა აუცილებელია</span>
+                        <span className="text-redPrimary text-sm">ქალაქის არჩევა აუცილებელია</span>
                     )}
                 </div>
             </div>
@@ -269,12 +209,12 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="price" className="font-medium text-sm leading-[1.05rem]">ფასი</label>
                     <input {...register("price", { required: true })} 
-                        type="number" id="price" step="0.01" min="0" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md`}/>
+                        type="number" id="price" step="0.01" min="0" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                     <div className="mt-1 flex items-center gap-[7px]">
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.price ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <p className={`text-sm leading-[1.05rem] ${errors.price ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                        <p className={`text-sm leading-[1.05rem] ${errors.price ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                             მხოლოდ რიცხვები
                         </p>
                     </div>
@@ -284,12 +224,12 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="area" className="font-medium text-sm leading-[1.05rem]">ფართობი</label>
                     <input {...register("area", { required: true })} 
-                        type="number" id="area" step="0.01" min="0" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md`}/>
+                        type="number" id="area" step="0.01" min="0" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                     <div className="mt-1 flex items-center gap-[7px]">
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.area ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <p className={`text-sm leading-[1.05rem] ${errors.area ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                        <p className={`text-sm leading-[1.05rem] ${errors.area ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                             მხოლოდ რიცხვები
                         </p>
                     </div>
@@ -299,12 +239,12 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="bedrooms" className="font-medium text-sm leading-[1.05rem]">საძინებლების რაოდენობა *</label>
                     <input {...register("bedrooms", { required: true })} 
-                        type="number" id="bedrooms" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md`}/>
+                        type="number" id="bedrooms" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.price ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                     <div className="mt-1 flex items-center gap-[7px]">
                         <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.bedrooms ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <p className={`text-sm leading-[1.05rem] ${errors.bedrooms ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                        <p className={`text-sm leading-[1.05rem] ${errors.bedrooms ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                             მხოლოდ რიცხვები
                         </p>
                     </div>
@@ -315,12 +255,12 @@ const AddListing = () => {
             <div className="mt-5">
                 <label htmlFor="description" className="font-medium text-sm leading-[1.05rem]">აღწერა *</label>
                 <textarea {...register("description", { required: true, validate: value => value.trim().split(/\s+/).length >= 5 })} 
-                    id="description" className={`mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.description ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md resize-none`}/>
+                    id="description" className={`mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.description ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md resize-none`}/>
                 <div className="mt-1 flex items-center gap-[7px]">
                     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 1.40918L3.125 9.591L0 5.87199" stroke={`${errors.description ? '#f93b1d' : isSubmitted ? '#45a849' : '#021526'}`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <p className={`text-sm leading-[1.05rem] ${errors.description ? 'text-red' : isSubmitted ? 'text-green' : 'text-black'}`}>
+                    <p className={`text-sm leading-[1.05rem] ${errors.description ? 'text-redPrimary' : isSubmitted ? 'text-greenPrimary' : 'text-black'}`}>
                         მინიმუმ ხუთი სიტყვა
                     </p>
                 </div>
@@ -329,7 +269,7 @@ const AddListing = () => {
             {/* image */}
             <div className="mt-5">
                 <label htmlFor="image" className="font-medium text-sm leading-[1.05rem]">ატვირთეთ ფოტო *</label>
-                <div className={`relative mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.description ? 'border-red' : isSubmitted ? 'border-green' : 'border-black'} rounded-md overflow-hidden`}>
+                <div className={`relative mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.image ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md overflow-hidden`}>
                     <input 
                         type="file" 
                         id="image"
@@ -378,7 +318,7 @@ const AddListing = () => {
             {/* buttons */}
             <div className="mt-[90px] w-full flex justify-end items-center gap-[15px]">
                 <ButtonSecondary text="გაუქმება" />
-                <ButtonPrimary text="დაამატე ლისტინგი" />
+                <ButtonPrimary text="დაამატე ლისტინგი" type="submit" />
             </div>
 
         </form>

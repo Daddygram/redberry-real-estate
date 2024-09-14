@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+const flowbite = require("flowbite-react/tailwind");
+
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", flowbite.content()],
   theme: {
     screens: {
       'sm': '640px',
@@ -13,15 +15,15 @@ export default {
       'black': '#021526',
       'blackSecondary': '#1A1A1F',
       'white': '#ffffff',
-      'red': '#F93B1D',
+      'redPrimary': '#F93B1D',
       'darkRed': '#DF3014',
-      'green': '#45A849',
+      'greenPrimary': '#45A849',
       'grey': '#DBDBDB',
       'lightGrey': '#F3F3F3',
       'darkGrey': '#808A93',
     },
     extend: {},
   },
-  plugins: [],
+  plugins: [flowbite.plugin()],
 }
 

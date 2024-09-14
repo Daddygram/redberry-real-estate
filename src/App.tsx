@@ -1,15 +1,15 @@
 import './App.css'
-import AddListing from './pages/AddListing'
+// import AddListing from './pages/AddListing'
 // import ListingPage from './pages/ListingPage'
-// import Home from './pages/Home'
+import Home from './pages/Home'
 
 function App() {
 
   return (
     <div className='max-w-screen-2xl mx-auto'>
-        {/* <Home /> */}
+        <Home />
         {/* <ListingPage /> */}
-        <AddListing />
+        {/* <AddListing /> */}
     </div>
   )
 }

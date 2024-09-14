@@ -1,13 +1,14 @@
 interface ButtonPrimaryProps {
   text: string;
+  type?: "submit" | "reset" | "button";
 }
 
-const ButtonPrimary = ({text}:ButtonPrimaryProps) => {
+const ButtonPrimary = ({ text, type = "button" }: ButtonPrimaryProps) => {
   return (
-    <button className="py-[14px] px-4 bg-red text-white rounded-[10px]">
+    <button type={type} className="py-[14px] px-4 bg-redPrimary text-white rounded-[10px]">
       {text}
     </button>
-  )
+  );
 }
 
-export default ButtonPrimary
+export default ButtonPrimary;

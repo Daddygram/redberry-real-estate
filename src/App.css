@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* reset input styles */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+/* file upload button */
+input[type="file"]::file-selector-button {
+    display: none;
+}
+input[type="file"]::before {
+    color: white;
+}
+
+/* Custom input radio */
+.radio input[type=radio] {
+    position: absolute;
+    opacity: 0;
+}
+.radio input[type=radio] + .radio-label:before {
+    content: "";
+    background: white;
+    border-radius: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+    top: 0;
+    margin-right: 8px;
+    vertical-align: top;
+    cursor: pointer;
+    text-align: center;
+    transition: all 250ms ease;
+}
+.radio input[type=radio]:checked + .radio-label:before {
+    background-color: black;
+    box-shadow: inset 0 0 0 4px white;
+}
+.radio input[type=radio]:focus + .radio-label:before {
+    outline: none;
+    border-color: black;
+}
+.radio input[type=radio]:disabled + .radio-label:before {
+    box-shadow: inset 0 0 0 4px white;
+    border-color: #b4b4b4;
+    background: #b4b4b4;
+}
+.radio input[type=radio] + .radio-label:empty:before {
+    margin-right: 0;
+}
+
+/* custom scroll */
+.customScroll::-webkit-scrollbar-button {
+    display: none;
+}
+.customScroll::-webkit-scrollbar-thumb {
+    background: #0E0D0D;
+    border-radius: 2px;
+}
+.customScroll::-webkit-scrollbar {
+    background: rgba(14,13,13, 0.1);
+    width: 2px;
+    border-radius: 2px;
+}

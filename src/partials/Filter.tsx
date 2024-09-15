@@ -8,7 +8,7 @@ import { useFileUpload } from "../hooks.tsx/useFileUpload";
 
 const Filter = () => {
 
-  const { register, handleSubmit, errors, isSubmitted, onSubmit } = useFormLogic<Agents>();
+  const { register, handleSubmit, errors, isSubmitted, onSubmit } = useFormLogic<Agents>('agents');
   const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
   
   const [openModal, setOpenModal] = useState(false);

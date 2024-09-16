@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import ButtonSecondary from "../components/ButtonSecondary";
 import ButtonPrimary from "../components/ButtonPrimary";
-import { City, Region } from "../lib/types";
+import { Agents, City, Inputs, Region } from "../lib/types";
 import { useFormLogic } from "../hooks.tsx/useFormLogic";
 import { useFileUpload } from "../hooks.tsx/useFileUpload";
 
 
 
 const AddListing = () => {
-    const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } = useFormLogic();
-    
+    const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } = useFormLogic<Inputs>('real-estates');
+
+    // city & region states
     const [regions, setRegions] = useState<Region[]>([]);
     const [cities, setCities] = useState<City[]>([]);
     const [filteredCities, setFilteredCities] = useState<City[]>([]);
@@ -19,10 +20,16 @@ const AddListing = () => {
     const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null); // Store selected region ID
     const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
+    // Agents States
+    const [agents, setAgents] = useState<Agents[]>([]);
+    const [showAgentOptions, setShowAgentOptions] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
+
     // Fetch regions and cities on component mount
     useEffect(() => {
         fetchRegions();
-        fetchCities(); // Fetch all cities initially
+        fetchCities();
+        fetchAgents();
     }, []);
 
     useEffect(() => {
@@ -58,19 +65,51 @@ const AddListing = () => {
     const handleRegionSelect = (region: Region) => {
         setSelectedRegion(region.name);
         setSelectedRegionId(region.id); // Set selected region ID
-        setValue("region", region.name); // Update the form value for region
+        setValue("region_id", region.id); // Update the form value for region
         setShowRegionOptions(false);
         setSelectedCity(null); // Reset selected city
-        setValue("city", ""); // Clear the city value in the form
+        setValue("city_id", 0); // Clear the city value in the form
     };
 
     const handleCitySelect = (city: City) => {
         setSelectedCity(city.name);
-        setValue("city", city.name); // Update the form value for city
+        setValue("city_id", city.id); // Update the form value for city
         setShowCityOptions(false);
     };
 
     const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
+
+    const fetchAgents = async () => {
+        const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
+        try {
+            const response = await fetch('https://api.real-estate-manager.redberryinternship.ge/api/agents', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Add token here
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+    
+            const agents = await response.json();
+            if (agents) {
+                setAgents(agents)
+            }
+            return agents;
+        } catch (error) {
+            console.error('Error fetching agents:', error);
+            return null;
+        }
+    };    
+    
+    const handleAgentSelect = (agent: Agents) => {
+        setSelectedAgent(agent.name);
+        setValue("agent_id", agent.id);
+        setShowAgentOptions(false);
+    };
 
     return (
     <div className="mt-[62px] max-w-[790px] mx-auto text-black">
@@ -127,7 +166,7 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="region" className="font-medium text-sm leading-[1.05rem]">რეგიონი</label>
                     <div className="select-menu w-full relative">
-                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.region ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
+                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.region_id ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
                             onClick={() => setShowRegionOptions(!showRegionOptions)}>
                             <span className="text-sm leading-4 text-black">{selectedRegion || "აირჩიეთ რეგიონი"}</span>
                             <svg className={`cityChevron transition-all duration-100 ${showRegionOptions ? 'rotate-180' : ''}`} width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -151,12 +190,12 @@ const AddListing = () => {
                         )}
 
                         <input
-                            {...register("region", { required: true })}
+                            {...register("region_id", { required: true })}
                             type="hidden"
                             value={selectedRegion || ""}
                         />
                     </div>
-                    {errors.region && (
+                    {errors.region_id && (
                         <span className="text-redPrimary text-sm">რეგიონის არჩევა აუცილებელია</span>
                     )}
                 </div>
@@ -165,7 +204,7 @@ const AddListing = () => {
                 <div>
                     <label htmlFor="city" className="font-medium text-sm leading-[1.05rem]">ქალაქი</label>
                     <div className="select-menu w-full relative">
-                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.city ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
+                        <div className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.city_id ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
                             onClick={() => setShowCityOptions(!showCityOptions)}
                         >
                         <span className="text-sm leading-4 text-black">{selectedCity || "აირჩიეთ ქალაქი"}</span>
@@ -191,12 +230,12 @@ const AddListing = () => {
 
                         <input
                             id="city"
-                            {...register("city", { required: true })}
+                            {...register("city_id", { required: true })}
                             type="hidden"
                             value={selectedCity || ""}
                         />
                     </div>
-                    {errors.city && (
+                    {errors.city_id && (
                         <span className="text-redPrimary text-sm">ქალაქის არჩევა აუცილებელია</span>
                     )}
                 </div>
@@ -313,6 +352,43 @@ const AddListing = () => {
 
             {/* agents */}
             <p className="mt-20 mb-2 font-medium text-blackSecondary leading-[1.221rem]">აგენტი</p>
+            {/* Agent Dropdown */}
+            <div className="grid grid-cols-2">
+                <div className="select-menu w-full relative">
+                    <div
+                        className={`select flex items-center justify-between px-[10px] py-3 border border-solid ${errors.agent_id ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-lg cursor-pointer`}
+                        onClick={() => setShowAgentOptions(!showAgentOptions)}
+                    >
+                        <span className="text-sm leading-4 text-black">{selectedAgent || "Select an Agent"}</span>
+                        <svg className={`cityChevron transition-all duration-100 ${showAgentOptions ? 'rotate-180' : ''}`} width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 4.5L6 7.5L9 4.5" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+
+                    {showAgentOptions && (
+                        <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-lightPink rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                            {agents.map(agent => (
+                                <div
+                                    key={agent.id}
+                                    className="option py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleAgentSelect(agent)}
+                                >
+                                    {agent.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <input
+                        {...register("agent_id", { required: true })}
+                        type="hidden"
+                        value={selectedAgent || ""}
+                    />
+                </div>
+                {errors.agent_id && (
+                    <span className="text-redPrimary text-sm">Selecting an agent is required</span>
+                )}
+            </div>
             
 
             {/* buttons */}
@@ -322,6 +398,9 @@ const AddListing = () => {
             </div>
 
         </form>
+
+        {/* for better visual */}
+        <div className="mb-[200px]"></div>
     </div>
   )
 }

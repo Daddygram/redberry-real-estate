@@ -2,16 +2,16 @@ import ButtonPrimary from "../components/ButtonPrimary"
 import ButtonSecondary from "../components/ButtonSecondary"
 import { Modal } from "flowbite-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useFormLogic } from "../hooks.tsx/useFormLogic";
 import { Agents } from "../lib/types";
 import { useFileUpload } from "../hooks.tsx/useFileUpload";
 
 const Filter = () => {
-
-  const { register, handleSubmit, errors, isSubmitted, onSubmit } = useFormLogic<Agents>('agents');
-  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
-  
   const [openModal, setOpenModal] = useState(false);
+
+  const { register, handleSubmit, errors, isSubmitted, onSubmit } = useFormLogic<Agents>('agents', setOpenModal);
+  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
 
   return (
     <div className="mt-[77px] flex justify-between items-center">
@@ -25,7 +25,9 @@ const Filter = () => {
 
         {/* buttons */}
         <div className="flex justify-center items-center gap-4">
-          <ButtonPrimary text="ლისტინგის დამატება" />
+          <Link to='/addListing'>
+            <ButtonPrimary text="ლისტინგის დამატება" />
+          </Link>
           <ButtonSecondary text="აგენტის დამატება" onClick={() => setOpenModal(true)} />
         </div>
 

@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     element: <ListingPage />
   },
   {
-    path: "/add",
+    path: "/addListing",
     element: <AddListing />
   },
 ]);

@@ -13,13 +13,14 @@ export type Inputs = {
     is_rental: number;
     address: string;
     zip_code: string;
-    region: string;
-    city: string;
+    region_id: number;
+    city_id: number;
     price: number;
     area: number;
     bedrooms: number;
     description: string;
     image: string;
+    agent_id?: number;
 }
 
 export type Agents = {

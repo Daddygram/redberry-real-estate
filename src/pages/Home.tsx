@@ -10,8 +10,6 @@ const Home = () => {
     fetchListings()
   }, [])
 
-  console.log(listings[0])
-
   const fetchListings = async () => {
     const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
       try {

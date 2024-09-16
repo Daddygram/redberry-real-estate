@@ -22,7 +22,11 @@ export default {
       'lightGrey': '#F3F3F3',
       'darkGrey': '#808A93',
     },
-    extend: {},
+    extend: {
+      boxShadow: {
+        'custom': '5px 5px 12px 0px #02152614',
+      },
+    },
   },
   plugins: [flowbite.plugin()],
 }

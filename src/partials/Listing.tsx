@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Inputs } from "../lib/types";
 
 interface ListingProps {
@@ -8,10 +9,10 @@ const Listing = ({listing}: ListingProps) => {
     const formattedPrice = new Intl.NumberFormat('en-US', {
         useGrouping: true,
         maximumFractionDigits: 0,
-      }).format(listing.price).replace(/,/g, ' ');
+    }).format(listing.price).replace(/,/g, ' ');
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <Link to={`/listing/${listing.id}`} className="flex flex-col h-full rounded-[14px] cursor-pointer overflow-hidden hover:shadow-custom">
         {/* main image */}
         <div className="relative">
             <span className="absolute top-[23px] left-[23px] px-[26.5px] py-[8.5px] bg-black/50 rounded-[20px]">
@@ -29,7 +30,7 @@ const Listing = ({listing}: ListingProps) => {
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" clipRule="evenodd" d="M5.05025 4.05025C7.78392 1.31658 12.2161 1.31658 14.9497 4.05025C17.6834 6.78392 17.6834 11.2161 14.9497 13.9497L10 18.8995L5.05025 13.9497C2.31658 11.2161 2.31658 6.78392 5.05025 4.05025ZM10 11C11.1046 11 12 10.1046 12 9C12 7.89543 11.1046 7 10 7C8.89543 7 8 7.89543 8 9C8 10.1046 8.89543 11 10 11Z" fill="#021526" fillOpacity="0.5"/>
                 </svg>
-                <p className="text-black/70 leading-[1.2rem] ">{listing.address}</p>
+                <p className="text-black/70 leading-[1.2rem] ">{listing.city ? listing.city.name : ''}, {listing.address}</p>
             </div>
             {/* deeper details */}
             <div className="mt-5 flex items-center gap-8">
@@ -57,7 +58,7 @@ const Listing = ({listing}: ListingProps) => {
                 </div>
             </div>
         </div>
-    </div>
+    </Link>
   )
 }
 

@@ -1,3 +1,5 @@
+import { Key } from "react";
+
 export type Region = {
     id: number;
     name: string;
@@ -10,6 +12,7 @@ export type City = {
 };
 
 export type Inputs = {
+    id?: Key | null | undefined;
     is_rental: number;
     address: string;
     zip_code: string;

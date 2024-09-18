@@ -13,7 +13,7 @@ export type City = {
 
 export type Inputs = {
     agent?: Agents;
-    city?: City;
+    city: City;
     id?: Key | null | undefined;
     created_at?: string;
     is_rental: number;

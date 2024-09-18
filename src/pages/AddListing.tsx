@@ -176,7 +176,7 @@ const AddListing = () => {
 
                         {/* Options List for Regions */}
                         {showRegionOptions && (
-                            <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-lightPink rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                            <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-grey rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
                                 {regions.map((region) => (
                                     <div
                                         key={region.id}
@@ -215,7 +215,7 @@ const AddListing = () => {
 
                         {/* Options List for Cities */}
                         {showCityOptions && (
-                            <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-lightPink rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                            <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-grey rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
                                 {filteredCities.map((city) => (
                                     <div
                                         key={city.id}
@@ -366,7 +366,7 @@ const AddListing = () => {
                     </div>
 
                     {showAgentOptions && (
-                        <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-lightPink rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                        <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-grey rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
                             {agents.map(agent => (
                                 <div
                                     key={agent.id}

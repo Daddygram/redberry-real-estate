@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import './App.css';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Loader } from './components/Loader';
 
 // Lazy load components
 const Layout = React.lazy(() => import('./Layout'));
@@ -42,7 +43,7 @@ createRoot(document.getElementById('root')!).render(
         <button onClick={resetErrorBoundary}>Try again</button>
       </div>
     )}>
-      <React.Suspense fallback={<div>Loading...</div>}>
+      <React.Suspense fallback={<Loader />}>
         <RouterProvider router={router} />
       </React.Suspense>
     </ErrorBoundary>

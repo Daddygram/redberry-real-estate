@@ -3,16 +3,20 @@ import Filter from "../partials/Filter";
 import Listing from "../partials/Listing";
 import { Inputs } from "../lib/types";
 import { ActiveFilters } from "../partials/ActiveFilters";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Home = () => {
   const [listings, setListings] = useState<Inputs[]>([]);
   const [filteredListings, setFilteredListings] = useState<Inputs[]>([]);
+
   const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [minArea, setMinArea] = useState<number | undefined>(undefined);
   const [maxArea, setMaxArea] = useState<number | undefined>(undefined);
   const [bedroomCount, setBedroomCount] = useState<number | undefined>(undefined);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchListings();
@@ -52,6 +56,7 @@ const Home = () => {
 
   const fetchListings = async () => {
     const token = "9d040684-0d70-417e-8eb3-3ffdfa7dca5c";
+    setLoading(true)
     try {
       const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/real-estates", {
         method: "GET",
@@ -68,11 +73,13 @@ const Home = () => {
       const listings = await response.json();
       if (listings) {
         setListings(listings);
-        setFilteredListings(listings); // Initially show all listings
+        setFilteredListings(listings); 
       }
     } catch (error) {
       console.error("Error fetching listings:", error);
       return null;
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -111,7 +118,9 @@ const Home = () => {
         bedroomCount={bedroomCount} 
         setBedroomCount={setBedroomCount}
       />
-      {filteredListings.length > 0 ? (
+      {loading ? (
+        <SkeletonLoader /> // Show skeleton loader while loading
+      ) : filteredListings.length > 0 ? (
         <div className="mt-8 grid grid-cols-4 gap-5">
           {filteredListings.map((listing) => (
             <Listing key={listing.id} listing={listing} />

@@ -21,7 +21,7 @@ const AddListing = () => {
     const [showRegionOptions, setShowRegionOptions] = useState(false);
     const [showCityOptions, setShowCityOptions] = useState(false);
     const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-    const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null); // Store selected region ID
+    const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
     const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
     // Agents States
@@ -94,7 +94,7 @@ const AddListing = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Add token here
+                    'Authorization': `Bearer ${token}`
                 }
             });
     

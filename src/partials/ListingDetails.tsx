@@ -1,13 +1,14 @@
 import ButtonGrey from "../components/ButtonGrey";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { Inputs } from "../lib/types";
 
 const ListingDetails = () => {
 
     const { listingId } = useParams();
-
     const [listing, setListing] = useState<Inputs>();
+    
+    const navigate = useNavigate();
 
     const fetchListing = useCallback(async () => {
         const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
@@ -27,11 +28,34 @@ const ListingDetails = () => {
 
             const data: Inputs = await response.json();
             setListing(data);
-            console.log(data);
         } catch (error) {
             console.error('Error fetching listing:', error);
         }
     }, [listingId]);
+
+    const handleDelete = async () => {
+        const token = "9d040684-0d70-417e-8eb3-3ffdfa7dca5c";
+        const url = `https://api.real-estate-manager.redberryinternship.ge/api/real-estates/${listingId}`;
+        try {
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          if (response.ok) {
+            // Redirect or update the UI after successful deletion
+            console.log("Listing deleted successfully");
+            navigate('/'); // Redirect to listings page or wherever appropriate
+          } else {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+        } catch (error) {
+          console.error("Error deleting listing:", error);
+        }
+    };
 
     useEffect(() => {
         fetchListing();
@@ -139,7 +163,7 @@ const ListingDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <ButtonGrey text="ლისტინგის წაშლა" />
+                        <ButtonGrey text="ლისტინგის წაშლა" onClick={handleDelete} />
                     </div>
 
                 </div>

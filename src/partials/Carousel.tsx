@@ -52,8 +52,8 @@ const Carousel = () => {
                 loop={true}
                 onSwiper={(swiper) => setSwiperInstance(swiper)}
             >
-                {listings.slice(0, 10).map(listing => (
-                    <SwiperSlide><Listing key={listing.id} listing={listing} /></SwiperSlide>
+                {listings.slice(0, 8).map(listing => (
+                    <SwiperSlide key={listing.id}><Listing key={listing.id} listing={listing} /></SwiperSlide>
                 ))}
             </Swiper>
   

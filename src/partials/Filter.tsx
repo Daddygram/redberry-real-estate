@@ -8,7 +8,7 @@ import { Agents, Region } from "../lib/types";
 import { useFileUpload } from "../hooks.tsx/useFileUpload";
 
 interface FilterProps {
-  onFilter: (selectedRegions: number[], minPrice?: number, maxPrice?: number) => void;
+  onFilter: (selectedRegions: number[], minPrice?: number, maxPrice?: number,  minArea?: number, maxArea?: number, bedroomCount?: number ) => void;
 }
 
 const Filter = ({ onFilter }: FilterProps) => {
@@ -19,6 +19,8 @@ const Filter = ({ onFilter }: FilterProps) => {
 
   const regionDropdownRef = useRef<HTMLDivElement>(null);
   const priceDropdownRef = useRef<HTMLDivElement>(null);
+  const areaDropdownRef = useRef<HTMLDivElement>(null);
+  const bedroomDropdownRef = useRef<HTMLDivElement>(null);
 
   // region filter
   const [regions, setRegions] = useState<Region[]>([]);
@@ -29,6 +31,15 @@ const Filter = ({ onFilter }: FilterProps) => {
   const [minPrice, setMinPrice] = useState<number | ''>('');
   const [maxPrice, setMaxPrice] = useState<number | ''>('');
   const [showPriceOptions, setShowPriceOptions] = useState(false);
+
+  // area filter
+  const [minArea, setMinArea] = useState<number | ''>('');
+  const [maxArea, setMaxArea] = useState<number | ''>('');
+  const [showAreaOptions, setShowAreaOptions] = useState(false);
+
+  // bedrooms count filter
+  const [bedroomCount, setBedroomCount] = useState<number | ''>('');
+  const [showBedroomOptions, setShowBedroomOptions] = useState(false);
 
   const fetchRegions = async () => {
     try {
@@ -49,6 +60,12 @@ const Filter = ({ onFilter }: FilterProps) => {
       if (priceDropdownRef.current && !priceDropdownRef.current.contains(event.target as Node)) {
         setShowPriceOptions(false);
       }
+      if (areaDropdownRef.current && !areaDropdownRef.current.contains(event.target as Node)) { // Handle click outside for Area filter
+        setShowAreaOptions(false);
+      }
+      if (bedroomDropdownRef.current && !bedroomDropdownRef.current.contains(event.target as Node)) { // Handle click outside for Area filter
+        setShowBedroomOptions(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -66,7 +83,7 @@ const Filter = ({ onFilter }: FilterProps) => {
   };
 
   const applyFilter = () => {
-    onFilter(selectedRegions, minPrice || undefined, maxPrice || undefined); // Pass minPrice and maxPrice to parent component
+    onFilter(selectedRegions, minPrice || undefined, maxPrice || undefined, minArea || undefined, maxArea || undefined, bedroomCount || undefined);
   };
 
   return (
@@ -176,8 +193,96 @@ const Filter = ({ onFilter }: FilterProps) => {
             )}
           </div>
 
-          <li className="px-[14px] py-2">ფართობი</li>
-          <li className="px-[14px] py-2">საძინებლების რაოდენობა</li>
+          {/* Area Filter */}
+          <div className="select-menu relative hover:bg-lightGrey active:bg-lightGrey rounded-md" ref={areaDropdownRef}>
+            <div
+              className='select px-[14px] py-2 flex items-center gap-1 cursor-pointer'
+              onClick={() => setShowAreaOptions(!showAreaOptions)}>
+              <span className="font-medium text-black leading-[1.2rem]">ფართობი</span>
+              <svg className={`transition-all duration-100 ${showAreaOptions ? 'rotate-180' : ''}`} width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            {showAreaOptions && (
+              <div className="options-list absolute top-14 -left-[6px] w-fit p-6 bg-white text-sm leading-4 border border-solid border-grey rounded-lg z-10 overflow-hidden transition-all duration-100 shadow-custom">
+                <span className="font-medium text-black text-base leading-[1.2rem]">ფართობის მიხედვით</span>
+                <div className="mt-6 min-w-max grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <input
+                      type="number"
+                      placeholder="დან"
+                      value={minArea}
+                      onChange={(e) => setMinArea(e.target.value === '' ? '' : Number(e.target.value))}
+                      className="border border-solid border-grey rounded-md px-[10px] py-3 text-sm placeholder:text-black/40 focus:border-black"
+                    />
+                    <span className="absolute right-[10px] top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm text-black" >მ²</span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      placeholder="მდე"
+                      value={maxArea}
+                      onChange={(e) => setMaxArea(e.target.value === '' ? '' : Number(e.target.value))}
+                      className="border border-solid border-grey rounded-md px-[10px] py-3 text-sm placeholder:text-black/40 focus:border-black"
+                    />
+                    <span className="absolute right-[10px] top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm text-black" >მ²</span>
+                  </div>
+                  {/* Quick Select for Minimum Area */}
+                  <div className="flex flex-col">
+                    <p className="font-medium text-black text-sm">მინ. ფასი</p>
+                    <span className="mt-4 cursor-pointer" onClick={() => setMinArea(50)}>50 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMinArea(100)}>100 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMinArea(150)}>150 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMinArea(200)}>200 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMinArea(300)}>300 მ²</span>
+                  </div>
+
+                  {/* Quick Select for Maximum Area */}
+                  <div className="flex flex-col">
+                    <p className="font-medium text-black text-sm">მაქს. ფასი</p>
+                    <span className="mt-4 cursor-pointer" onClick={() => setMaxArea(50)}>50 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMaxArea(100)}>100 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMaxArea(150)}>150 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMaxArea(200)}>200 მ²</span>
+                    <span className="mt-2 cursor-pointer" onClick={() => setMaxArea(300)}>300 მ²</span>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <ButtonPrimary text="არჩევა" onClick={applyFilter} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bedroom Count Filter */}
+          <div className="select-menu relative hover:bg-lightGrey active:bg-lightGrey rounded-md" ref={bedroomDropdownRef}>
+            <div
+              className='select px-[14px] py-2 flex items-center gap-1 cursor-pointer'
+              onClick={() => setShowBedroomOptions(!showBedroomOptions)}>
+              <span className="font-medium text-black leading-[1.2rem]">საძინებლების რაოდენობა</span>
+              <svg className={`transition-all duration-100 ${showBedroomOptions ? 'rotate-180' : ''}`} width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            {showBedroomOptions && (
+              <div className="options-list absolute top-14 -left-[6px] w-fit p-6 bg-white text-sm leading-4 border border-solid border-grey rounded-lg z-10 overflow-hidden transition-all duration-100 shadow-custom">
+                <span className="font-medium text-black text-base leading-[1.2rem]">საძინებლების რაოდენობა</span>
+                <div className="mt-6 min-w-max">
+                  <input
+                    type="number"
+                    placeholder=""
+                    value={bedroomCount}
+                    onChange={(e) => setBedroomCount(e.target.value === '' ? '' : Number(e.target.value))}
+                    className="max-w-11 border border-solid border-grey rounded-md px-[10px] py-3 text-sm placeholder:text-black/40 focus:border-black"
+                  />
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <ButtonPrimary text="არჩევა" onClick={applyFilter} />
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* buttons */}

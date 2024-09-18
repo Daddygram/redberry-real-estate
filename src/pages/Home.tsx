@@ -9,6 +9,9 @@ const Home = () => {
   const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+  const [minArea, setMinArea] = useState<number | undefined>(undefined);
+  const [maxArea, setMaxArea] = useState<number | undefined>(undefined);
+  const [bedroomCount, setBedroomCount] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     fetchListings();
@@ -31,9 +34,20 @@ const Home = () => {
     if (maxPrice !== undefined) {
       filtered = filtered.filter((listing) => listing.price <= maxPrice);
     }
+    if (minArea !== undefined) {
+      filtered = filtered.filter((listing) => listing.area >= minArea);
+    }
+
+    if (maxArea !== undefined) {
+      filtered = filtered.filter((listing) => listing.area <= maxArea);
+    }
+    
+    if (bedroomCount !== undefined) {
+      filtered = filtered.filter((listing) => listing.bedrooms == bedroomCount);
+    }
 
     setFilteredListings(filtered);
-  }, [selectedRegions, minPrice, maxPrice, listings]);
+  }, [selectedRegions, minPrice, maxPrice, minArea, maxArea, listings, bedroomCount]);
 
   const fetchListings = async () => {
     const token = "9d040684-0d70-417e-8eb3-3ffdfa7dca5c";
@@ -62,11 +76,22 @@ const Home = () => {
   };
 
   // Handle filter event from Filter component
-  const handleFilter = (regions: number[], minPrice?: number, maxPrice?: number) => {
+  const handleFilter = (
+    regions: number[],
+    minPrice?: number,
+    maxPrice?: number,
+    minArea?: number,
+    maxArea?: number,
+    bedroomCount?: number,
+  ) => {
     setSelectedRegions(regions);
     setMinPrice(minPrice);
     setMaxPrice(maxPrice);
+    setMinArea(minArea);
+    setMaxArea(maxArea);
+    setBedroomCount(bedroomCount);
   };
+  
 
   return (
     <>

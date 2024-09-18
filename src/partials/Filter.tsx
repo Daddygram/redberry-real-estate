@@ -305,7 +305,7 @@ const Filter = ({ onFilter }: FilterProps) => {
                     {/* name */}
                     <div>
                       <label htmlFor="name" className="font-medium text-sm leading-[1.05rem]">სახელი *</label>
-                      <input {...register("name", { required: true, minLength: 2, pattern: /^[A-Za-z]+$/ })} 
+                      <input {...register("name", { required: true, minLength: 2})} 
                           type="text" id="name" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.name ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                       <div className="mt-1 flex items-center gap-[7px]">
                           <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -320,7 +320,7 @@ const Filter = ({ onFilter }: FilterProps) => {
                     {/* surname */}
                     <div>
                       <label htmlFor="surname" className="font-medium text-sm leading-[1.05rem]">გვარი *</label>
-                      <input {...register("surname", { required: true, minLength: 2, pattern: /^[A-Za-z]+$/ })} 
+                      <input {...register("surname", { required: true, minLength: 2 })} 
                           type="text" id="surname" className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.surname ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md`}/>
                       <div className="mt-1 flex items-center gap-[7px]">
                           <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -366,7 +366,7 @@ const Filter = ({ onFilter }: FilterProps) => {
                   {/* image */}
                   <div className="mt-5">
                       <label htmlFor="avatar" className="font-medium text-sm leading-[1.05rem]">ატვირთეთ ფოტო *</label>
-                      <div className={`relative mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${errors.avatar ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md overflow-hidden`}>
+                      <div className={`relative mt-[5px] min-h-[135px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-dashed border-darkGrey ${errors.avatar ? 'border-redPrimary' : isSubmitted ? 'border-greenPrimary' : 'border-black'} rounded-md overflow-hidden`}>
                           <input 
                               type="file" 
                               id="avatar"

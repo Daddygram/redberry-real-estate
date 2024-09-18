@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Filter from "../partials/Filter";
 import Listing from "../partials/Listing";
 import { Inputs } from "../lib/types";
+import { ActiveFilters } from "../partials/ActiveFilters";
 
 const Home = () => {
   const [listings, setListings] = useState<Inputs[]>([]);
@@ -96,6 +97,20 @@ const Home = () => {
   return (
     <>
       <Filter onFilter={handleFilter} />
+      <ActiveFilters 
+        selectedRegions={selectedRegions} 
+        setSelectedRegions={setSelectedRegions}
+        minPrice={minPrice} 
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice} 
+        setMaxPrice={setMaxPrice}
+        minArea={minArea} 
+        setMinArea={setMinArea}
+        maxArea={maxArea} 
+        setMaxArea={setMaxArea}
+        bedroomCount={bedroomCount} 
+        setBedroomCount={setBedroomCount}
+      />
       {filteredListings.length > 0 ? (
         <div className="mt-8 grid grid-cols-4 gap-5">
           {filteredListings.map((listing) => (

@@ -1,14 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Listing from './Listing';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper'; // Import the Swiper type
 
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { Inputs } from '../lib/types';
 
 
 const Carousel = () => {
-    const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null); // Set the correct type
+    const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+
+    const [listings, setListings] = useState<Inputs[]>([]);
+
+  useEffect(() => {
+    fetchListings()
+  }, [])
+
+  const fetchListings = async () => {
+    const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
+      try {
+        const response = await fetch('https://api.real-estate-manager.redberryinternship.ge/api/real-estates', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Add token here
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const listings = await response.json();
+        if (listings) {
+          setListings(listings)
+        }
+    } catch (error) {
+        console.error('Error fetching listings:', error);
+        return null;
+    }
+  }
   
     return (
       <>  
@@ -20,12 +52,9 @@ const Carousel = () => {
                 loop={true}
                 onSwiper={(swiper) => setSwiperInstance(swiper)}
             >
-                <SwiperSlide><Listing /></SwiperSlide>
-                <SwiperSlide><Listing /></SwiperSlide>
-                <SwiperSlide><Listing /></SwiperSlide>
-                <SwiperSlide><Listing /></SwiperSlide>
-                <SwiperSlide><Listing /></SwiperSlide>
-                <SwiperSlide><Listing /></SwiperSlide>
+                {listings.slice(0, 10).map(listing => (
+                    <SwiperSlide><Listing key={listing.id} listing={listing} /></SwiperSlide>
+                ))}
             </Swiper>
   
             {/* swiper buttons */}

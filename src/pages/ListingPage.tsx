@@ -1,4 +1,4 @@
-// import Carousel from "../partials/Carousel"
+import Carousel from "../partials/Carousel"
 import { Link } from "react-router-dom"
 import ListingDetails from "../partials/ListingDetails"
 
@@ -14,7 +14,7 @@ const ListingPage = () => {
         </Link>
 
         <ListingDetails />
-        {/* <Carousel /> */}
+        <Carousel />
     </div>
   )
 }

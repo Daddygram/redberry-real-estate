@@ -41,6 +41,9 @@ const Carousel = () => {
         return null;
     }
   }
+  const handleSlideChange = () => {
+    scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
     return (
       <>  
@@ -51,6 +54,7 @@ const Carousel = () => {
                 slidesPerView={4}
                 loop={true}
                 onSwiper={(swiper) => setSwiperInstance(swiper)}
+                onClick={handleSlideChange}
             >
                 {listings.slice(0, 8).map(listing => (
                     <SwiperSlide key={listing.id}><Listing key={listing.id} listing={listing} /></SwiperSlide>

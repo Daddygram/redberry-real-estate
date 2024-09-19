@@ -2,8 +2,12 @@ import ButtonGrey from "../components/ButtonGrey";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { Inputs } from "../lib/types";
+import { Modal } from "flowbite-react";
+import ButtonSecondary from "../components/ButtonSecondary";
+import ButtonPrimary from "../components/ButtonPrimary";
 
 const ListingDetails = () => {
+    const [openModal, setOpenModal] = useState(false);
 
     const { listingId } = useParams();
     const [listing, setListing] = useState<Inputs>();
@@ -163,9 +167,19 @@ const ListingDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <ButtonGrey text="ლისტინგის წაშლა" onClick={handleDelete} />
+                        <ButtonGrey text="ლისტინგის წაშლა" onClick={() => setOpenModal(true)} />
                     </div>
-
+                    <Modal dismissible show={openModal} size={'2xl'} onClose={() => setOpenModal(false)}>
+                        <Modal.Body>
+                            <div className="p-9 flex flex-col justify-center items-center gap-9">
+                                <p className="text-xl leading-6 text-black">გსურთ წაშალოთ ლისტინგი?</p>
+                                <div className="flex items-center gap-4">
+                                    <ButtonSecondary text="გაუქმება" onClick={() => setOpenModal(false)} />
+                                    <ButtonPrimary text="დადასტურება" onClick={handleDelete} />
+                                </div>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
                 </div>
             </div>
         )

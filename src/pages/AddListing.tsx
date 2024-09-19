@@ -86,6 +86,7 @@ const AddListing = () => {
     };
 
     const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
+    const { imagePreview: agentImagePreview, isPreviewVisible: isAgentPreviewVisible, handleFileChange: handleAgentFileChange, handleDelete: handleAgentDelete } = useFileUpload();
 
     const fetchAgents = async () => {
         const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
@@ -499,7 +500,7 @@ const AddListing = () => {
                                 required: true,
                                 validate: fileList => fileList.length > 0 ? true : "ფოტო უნდა აირჩიოთ",
                             })}
-                            onChange={handleFileChange}
+                            onChange={handleAgentFileChange}
                         />
                         <label htmlFor="avatar">
                             <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -508,12 +509,12 @@ const AddListing = () => {
                                 <path d="M8 12H16" stroke="#2D3648" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                         </label>
-                        {isPreviewVisible && (
+                        {isAgentPreviewVisible && (
                             <div className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                <img id="avatar-preview" src={imagePreview} alt="" className="max-h-[82px] rounded-[4px]" />
+                                <img id="avatar-preview" src={agentImagePreview} alt="" className="max-h-[82px] rounded-[4px]" />
                                 <svg 
                                     id="delete-preview" 
-                                    onClick={handleDelete} 
+                                    onClick={handleAgentDelete} 
                                     className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 cursor-pointer" 
                                     width="24" height="24" 
                                     viewBox="0 0 24 24" 

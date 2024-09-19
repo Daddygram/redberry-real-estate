@@ -1,8 +1,11 @@
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const useFormLogic = <T extends FieldValues>(endpoint: 'agents' | 'real-estates', setOpenModal?: (open: boolean) => void) => {
     const { register, handleSubmit, setValue, formState: { errors, isSubmitted } } = useForm<T>();
+
+    const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<T> = async (data) => {
         const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
@@ -61,7 +64,9 @@ export const useFormLogic = <T extends FieldValues>(endpoint: 'agents' | 'real-e
             if (setOpenModal) {
                 setOpenModal(false);
             }
-
+            if (endpoint === 'real-estates'){
+                navigate('/')
+            }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 console.error('Form submission failed with validation error:', error.response.data);

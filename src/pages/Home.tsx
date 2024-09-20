@@ -4,6 +4,7 @@ import Listing from "../partials/Listing";
 import { Inputs } from "../lib/types";
 import { ActiveFilters } from "../partials/ActiveFilters";
 import SkeletonLoader from "../components/SkeletonLoader";
+import { fetchListings } from "../utils/ApiUtils";
 
 const Home = () => {
   const [listings, setListings] = useState<Inputs[]>([]);
@@ -19,7 +20,7 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchListings();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -54,33 +55,14 @@ const Home = () => {
     setFilteredListings(filtered);
   }, [selectedRegions, minPrice, maxPrice, minArea, maxArea, listings, bedroomCount]);
 
-  const fetchListings = async () => {
-    const token = "9d040684-0d70-417e-8eb3-3ffdfa7dca5c";
-    setLoading(true)
-    try {
-      const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/real-estates", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const listings = await response.json();
-      if (listings) {
-        setListings(listings);
-        setFilteredListings(listings); 
-      }
-    } catch (error) {
-      console.error("Error fetching listings:", error);
-      return null;
-    } finally {
-      setLoading(false)
+  const fetchData = async () => {
+    setLoading(true);
+    const listings = await fetchListings(); // Call the function from api.ts
+    if (listings) {
+      setListings(listings);
+      setFilteredListings(listings);
     }
+    setLoading(false);
   };
 
   // Handle filter event from Filter component

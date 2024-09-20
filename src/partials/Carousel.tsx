@@ -6,41 +6,22 @@ import { Swiper as SwiperType } from 'swiper'; // Import the Swiper type
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Inputs } from '../lib/types';
+import { fetchListings } from '../utils/ApiUtils';
 
 
 const Carousel = () => {
-    const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
 
-    const [listings, setListings] = useState<Inputs[]>([]);
+  const [listings, setListings] = useState<Inputs[]>([]);
 
   useEffect(() => {
-    fetchListings()
-  }, [])
+    const loadInitialData = async () => {
+      const listingsData = await fetchListings();
+      setListings(listingsData);
+    };
+    loadInitialData();
+  }, []);
 
-  const fetchListings = async () => {
-    const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
-      try {
-        const response = await fetch('https://api.real-estate-manager.redberryinternship.ge/api/real-estates', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Add token here
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const listings = await response.json();
-        if (listings) {
-          setListings(listings)
-        }
-    } catch (error) {
-        console.error('Error fetching listings:', error);
-        return null;
-    }
-  }
   const handleSlideChange = () => {
     scrollTo({ top: 0, behavior: 'smooth' });
   };

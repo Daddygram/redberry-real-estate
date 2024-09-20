@@ -38,8 +38,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
-      <div>
-        <p>An error occurred: {error.message}</p>
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Oops! Something went wrong.</h1>
+        <p>{error.message}</p>
+        <button onClick={() => window.location.href = '/'}>Go to Home</button>
         <button onClick={resetErrorBoundary}>Try again</button>
       </div>
     )}>

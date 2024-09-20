@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Region } from "../lib/types";
+import { fetchRegions } from "../utils/ApiUtils";
 
 interface ActiveFiltersProps {
     selectedRegions: number[];
@@ -52,18 +53,12 @@ export const ActiveFilters = ({
       const [regions, setRegions] = useState<Region[]>([]);
     
       useEffect(() => {
-        fetchRegions();
+        const loadInitialData = async () => {
+          const regionsData = await fetchRegions();
+          setRegions(regionsData);
+        };
+        loadInitialData();
       }, []);
-    
-      const fetchRegions = async () => {
-        try {
-          const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/regions");
-          const data: Region[] = await response.json();
-          setRegions(data);
-        } catch (error) {
-          console.error("Failed to fetch regions", error);
-        }
-      };
     
       const getRegionNameById = (id: number): string | undefined => {
         const region = regions.find(region => region.id === id);

@@ -73,10 +73,14 @@ const AddListing = () => {
           setAgents(agentsData);
         };
         loadInitialData();
-      }, []);
+    }, []);
 
     useEffect(() => {
-        fetchAgents();
+        const loadAgentsData = async () => {
+            const agentsData = await fetchAgents();
+            setAgents(agentsData);
+          };
+          loadAgentsData();
     }, [onAgentSubmit]);
 
     useEffect(() => {

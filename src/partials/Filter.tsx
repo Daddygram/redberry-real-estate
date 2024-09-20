@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useFormLogic } from "../hooks.tsx/useFormLogic";
 import { Agents, Region } from "../lib/types";
 import { useFileUpload } from "../hooks.tsx/useFileUpload";
+import { fetchRegions } from "../utils/ApiUtils";
 
 interface FilterProps {
   onFilter: (selectedRegions: number[], minPrice?: number, maxPrice?: number,  minArea?: number, maxArea?: number, bedroomCount?: number ) => void;
@@ -41,18 +42,12 @@ const Filter = ({ onFilter }: FilterProps) => {
   const [bedroomCount, setBedroomCount] = useState<number | ''>('');
   const [showBedroomOptions, setShowBedroomOptions] = useState(false);
 
-  const fetchRegions = async () => {
-    try {
-      const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/regions");
-      const data: Region[] = await response.json();
-      setRegions(data);
-    } catch (error) {
-      console.error("Failed to fetch regions", error);
-    }
-  };
-
   useEffect(() => {
-    fetchRegions();
+    const loadInitialData = async () => {
+      const regionsData = await fetchRegions();
+      setRegions(regionsData);
+    };
+    loadInitialData();
     const handleClickOutside = (event: MouseEvent) => {
       if (regionDropdownRef.current && !regionDropdownRef.current.contains(event.target as Node)) {
         setShowRegionOptions(false);

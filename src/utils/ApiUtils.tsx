@@ -1,4 +1,3 @@
-// apiUtils.ts
 export const fetchRegions = async () => {
     try {
       const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/regions");
@@ -40,4 +39,26 @@ export const fetchRegions = async () => {
       return [];
     }
 };
+
+export const fetchListings = async () => {
+  const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
+    try {
+      const response = await fetch('https://api.real-estate-manager.redberryinternship.ge/api/real-estates', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Add token here
+          }
+      });
+
+      if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+      }
+
+      return await response.json();
+  } catch (error) {
+      console.error('Error fetching listings:', error);
+      return [];
+  }
+}
   

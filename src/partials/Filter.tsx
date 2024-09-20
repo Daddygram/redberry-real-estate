@@ -15,7 +15,7 @@ const Filter = ({ onFilter }: FilterProps) => {
   const [openModal, setOpenModal] = useState(false);
 
   const { register, handleSubmit, errors, isSubmitted, onSubmit } = useFormLogic<Agents>('agents', setOpenModal);
-  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
+  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload('agentImagePreview');
 
   const regionDropdownRef = useRef<HTMLDivElement>(null);
   const priceDropdownRef = useRef<HTMLDivElement>(null);

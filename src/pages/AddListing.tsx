@@ -5,14 +5,47 @@ import { Agents, City, Inputs, Region } from "../lib/types";
 import { useFormLogic } from "../hooks.tsx/useFormLogic";
 import { useFileUpload } from "../hooks.tsx/useFileUpload";
 import { Modal } from "flowbite-react";
+import { useWatch } from "react-hook-form";
+import { fetchAgents, fetchCities, fetchRegions } from "../utils/ApiUtils";
 
 
 
 const AddListing = () => {
     const [openModal, setOpenModal] = useState(false);
-    const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } = useFormLogic<Inputs>('real-estates');
-    const { register: registerAgent, handleSubmit: handleAgentSubmit, errors: agentErrors, isSubmitted: isAgentSubmitted, onSubmit: onAgentSubmit } = useFormLogic<Agents>('agents', setOpenModal);
+    const { register, handleSubmit, control, setValue, errors, isSubmitted, onSubmit } = useFormLogic<Inputs>('real-estates');
+    const { register: registerAgent, handleSubmit: handleAgentSubmit, control: agentControl, setValue: setAgentValue, errors: agentErrors, isSubmitted: isAgentSubmitted, onSubmit: onAgentSubmit } = useFormLogic<Agents>('agents', setOpenModal);
 
+    // Watching the form values
+    const formValues = useWatch({ control });
+    const agentFormValues = useWatch({ control: agentControl })
+
+    // Load saved form data from local storage
+    useEffect(() => {
+        const savedFormData = localStorage.getItem('addListingForm');
+        const savedAgentFormData = localStorage.getItem('addAgentForm');
+        if (savedFormData) {
+            const parsedFormData = JSON.parse(savedFormData);
+            Object.keys(parsedFormData).forEach((key) => {
+                setValue(key as keyof Inputs, parsedFormData[key]);
+            });
+        }
+        if (savedAgentFormData) {
+            const parsedFormData = JSON.parse(savedAgentFormData);
+            Object.keys(parsedFormData).forEach((key) => {
+                setAgentValue(key as keyof Agents, parsedFormData[key]);
+            });
+        }
+    }, [setAgentValue, setValue]);
+
+    // Save form data to local storage whenever form changes
+    useEffect(() => {
+        localStorage.setItem('addListingForm', JSON.stringify(formValues));
+    }, [formValues]);
+
+    // Save agent form data to local storage (if required)
+    useEffect(() => {
+        localStorage.setItem('addAgentForm', JSON.stringify(agentFormValues));
+    }, [agentFormValues]);
 
     // city & region states
     const [regions, setRegions] = useState<Region[]>([]);
@@ -31,10 +64,16 @@ const AddListing = () => {
 
     // Fetch regions and cities on component mount
     useEffect(() => {
-        fetchRegions();
-        fetchCities();
-        fetchAgents();
-    }, []);
+        const loadInitialData = async () => {
+          const regionsData = await fetchRegions();
+          const citiesData = await fetchCities();
+          const agentsData = await fetchAgents();
+          setRegions(regionsData);
+          setCities(citiesData);
+          setAgents(agentsData);
+        };
+        loadInitialData();
+      }, []);
 
     useEffect(() => {
         fetchAgents();
@@ -49,26 +88,6 @@ const AddListing = () => {
             setFilteredCities([]);
         }
     }, [selectedRegionId, cities]);
-
-    const fetchRegions = async () => {
-        try {
-            const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/regions");
-            const data: Region[] = await response.json();
-            setRegions(data);
-        } catch (error) {
-            console.error("Failed to fetch regions", error);
-        }
-    };
-
-    const fetchCities = async () => {
-        try {
-            const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/cities");
-            const data: City[] = await response.json();
-            setCities(data);
-        } catch (error) {
-            console.error("Failed to fetch cities", error);
-        }
-    };
 
     const handleRegionSelect = (region: Region) => {
         setSelectedRegion(region.name);
@@ -85,34 +104,8 @@ const AddListing = () => {
         setShowCityOptions(false);
     };
 
-    const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload();
-    const { imagePreview: agentImagePreview, isPreviewVisible: isAgentPreviewVisible, handleFileChange: handleAgentFileChange, handleDelete: handleAgentDelete } = useFileUpload();
-
-    const fetchAgents = async () => {
-        const token = '9d040684-0d70-417e-8eb3-3ffdfa7dca5c';
-        try {
-            const response = await fetch('https://api.real-estate-manager.redberryinternship.ge/api/agents', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-    
-            if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
-            }
-    
-            const agents = await response.json();
-            if (agents) {
-                setAgents(agents)
-            }
-            return agents;
-        } catch (error) {
-            console.error('Error fetching agents:', error);
-            return null;
-        }
-    };    
+    const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload('listingImagePreview');
+    const { imagePreview: agentImagePreview, isPreviewVisible: isAgentPreviewVisible, handleFileChange: handleAgentFileChange, handleDelete: handleAgentDelete } = useFileUpload('agentImagePreview');
     
     const handleAgentSelect = (agent: Agents) => {
         setSelectedAgent(agent.name);

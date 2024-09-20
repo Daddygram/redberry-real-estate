@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const useFormLogic = <T extends FieldValues>(endpoint: 'agents' | 'real-estates', setOpenModal?: (open: boolean) => void) => {
-    const { register, handleSubmit, setValue, formState: { errors, isSubmitted } } = useForm<T>();
+    const { register, handleSubmit, control, setValue, formState: { errors, isSubmitted } } = useForm<T>();
 
     const navigate = useNavigate();
 
@@ -76,5 +76,5 @@ export const useFormLogic = <T extends FieldValues>(endpoint: 'agents' | 'real-e
         }
     };
 
-    return { register, handleSubmit, setValue, errors, isSubmitted, onSubmit };
+    return { register, handleSubmit, control, setValue, errors, isSubmitted, onSubmit };
 };

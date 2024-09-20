@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-export const useFileUpload = () => {
-    const [imagePreview, setImagePreview] = useState<string>('');
-    const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
+export const useFileUpload = (imagePreviewLocalStorageKey: string) => {
+    const [imagePreview, setImagePreview] = useState<string>(localStorage.getItem(imagePreviewLocalStorageKey) || '');
+    const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(!!localStorage.getItem(imagePreviewLocalStorageKey));
 
     // Handle file changes and image preview
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,8 +13,12 @@ export const useFileUpload = () => {
             // Create a preview of the uploaded image
             const reader = new FileReader();
             reader.onload = (event) => {
-                setImagePreview(event.target?.result as string);
+                const result = event.target?.result as string;
+                setImagePreview(result);
                 setIsPreviewVisible(true);
+
+                // Store in localStorage using the key
+                localStorage.setItem(imagePreviewLocalStorageKey, result);
             };
             reader.readAsDataURL(file);
 
@@ -29,8 +33,12 @@ export const useFileUpload = () => {
     const handleDelete = () => {
         setImagePreview('');
         setIsPreviewVisible(false);
+
+        // Clear the image preview from localStorage using the key
+        localStorage.removeItem(imagePreviewLocalStorageKey);
+
         // Clear the file input value
-        const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');
+        const fileInput = document.querySelector<HTMLInputElement>(`input[type="file"]`);
         if (fileInput) {
             fileInput.value = '';  // Clear the file input value
         }

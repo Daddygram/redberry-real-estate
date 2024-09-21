@@ -21,6 +21,17 @@ const Home = () => {
 
   useEffect(() => {
     fetchData();
+    const storedFilters = localStorage.getItem("activeFilters");
+    if (storedFilters) {
+      const parsedFilters = JSON.parse(storedFilters);
+      
+      setSelectedRegions(parsedFilters.selectedRegions ?? []);
+      setMinPrice(parsedFilters.minPrice ?? undefined);
+      setMaxPrice(parsedFilters.maxPrice ?? undefined);
+      setMinArea(parsedFilters.minArea ?? undefined);
+      setMaxArea(parsedFilters.maxArea ?? undefined);
+      setBedroomCount(parsedFilters.bedroomCount ?? undefined);
+    }
   }, []);
 
   useEffect(() => {
@@ -74,15 +85,46 @@ const Home = () => {
     maxArea?: number,
     bedroomCount?: number,
   ) => {
-    setSelectedRegions(regions);
-    setMinPrice(minPrice);
-    setMaxPrice(maxPrice);
-    setMinArea(minArea);
-    setMaxArea(maxArea);
-    setBedroomCount(bedroomCount);
+    // Merge new filter values with existing ones
+    const updatedRegions = [...new Set([...selectedRegions, ...regions])];
+  
+    // Use existing values if new ones are undefined
+    const updatedMinPrice = minPrice ?? minPrice;
+    const updatedMaxPrice = maxPrice ?? maxPrice;
+    const updatedMinArea = minArea ?? minArea;
+    const updatedMaxArea = maxArea ?? maxArea;
+    const updatedBedroomCount = bedroomCount ?? bedroomCount;
+  
+    setSelectedRegions(updatedRegions);
+    setMinPrice(updatedMinPrice);
+    setMaxPrice(updatedMaxPrice);
+    setMinArea(updatedMinArea);
+    setMaxArea(updatedMaxArea);
+    setBedroomCount(updatedBedroomCount);
+  
+    const activeFilters = {
+      selectedRegions: updatedRegions,
+      minPrice: updatedMinPrice,
+      maxPrice: updatedMaxPrice,
+      minArea: updatedMinArea,
+      maxArea: updatedMaxArea,
+      bedroomCount: updatedBedroomCount,
+    };
+    localStorage.setItem("activeFilters", JSON.stringify(activeFilters));
   };
   
-
+  const clearFilters = () => {
+    setSelectedRegions([]);
+    setMinPrice(undefined);
+    setMaxPrice(undefined);
+    setMinArea(undefined);
+    setMaxArea(undefined);
+    setBedroomCount(undefined);
+    
+    // Clear from local storage
+    localStorage.removeItem("activeFilters");
+  };
+   
   return (
     <>
       <Filter onFilter={handleFilter} />
@@ -99,6 +141,7 @@ const Home = () => {
         setMaxArea={setMaxArea}
         bedroomCount={bedroomCount} 
         setBedroomCount={setBedroomCount}
+        clearFilters={clearFilters}
       />
       {loading ? (
         <SkeletonLoader /> // Show skeleton loader while loading
@@ -111,6 +154,9 @@ const Home = () => {
       ) : (
         <p className="w-full mt-[65px] text-black/80 text-xl leading-6">აღნიშნული მონაცემებით განცხადება არ იძებნება</p>
       )}
+
+      {/* for better visual */}
+      <div className="mt-[200px]"></div>
     </>
   );
 };

@@ -3,14 +3,25 @@ import { useState } from 'react';
 export const useFileUpload = (imagePreviewLocalStorageKey: string) => {
     const [imagePreview, setImagePreview] = useState<string>(localStorage.getItem(imagePreviewLocalStorageKey) || '');
     const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(!!localStorage.getItem(imagePreviewLocalStorageKey));
+    const [imageError, setImageError] = useState<string>(''); // State to hold validation error
 
-    // Handle file changes and image preview
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const fileInput = e.target;
         if (fileInput.files && fileInput.files.length > 0) {
             const file = fileInput.files[0];
 
-            // Create a preview of the uploaded image
+            // Validate file type and size
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                setImageError('უნდა იყოს სურათის ტიპი');
+                return;
+            }
+            if (file.size > 1048576) { // 1MB in bytes
+                setImageError('არ უნდა აღებმატებოდეს 1mb-ის ზომაში');
+                return;
+            }
+
+            setImageError('');
             const reader = new FileReader();
             reader.onload = (event) => {
                 const result = event.target?.result as string;
@@ -29,10 +40,10 @@ export const useFileUpload = (imagePreviewLocalStorageKey: string) => {
         }
     };
 
-    // Handle deletion of the image preview
     const handleDelete = () => {
         setImagePreview('');
         setIsPreviewVisible(false);
+        setImageError(''); // Clear any error on delete
 
         // Clear the image preview from localStorage using the key
         localStorage.removeItem(imagePreviewLocalStorageKey);
@@ -49,5 +60,6 @@ export const useFileUpload = (imagePreviewLocalStorageKey: string) => {
         isPreviewVisible,
         handleFileChange,
         handleDelete,
+        imageError,
     };
 };

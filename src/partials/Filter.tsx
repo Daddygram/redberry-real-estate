@@ -27,11 +27,13 @@ const Filter = ({ onFilter }: FilterProps) => {
   const [minPrice, setMinPrice] = useState<number | ''>('');
   const [maxPrice, setMaxPrice] = useState<number | ''>('');
   const [showPriceOptions, setShowPriceOptions] = useState(false);
+  const [priceError, setPriceError] = useState<string | null>(null);
 
   // area filter
   const [minArea, setMinArea] = useState<number | ''>('');
   const [maxArea, setMaxArea] = useState<number | ''>('');
   const [showAreaOptions, setShowAreaOptions] = useState(false);
+  const [areaError, setAreaError] = useState<string | null>(null);
 
   // bedrooms count filter
   const [bedroomCount, setBedroomCount] = useState<number | ''>('');
@@ -73,6 +75,19 @@ const Filter = ({ onFilter }: FilterProps) => {
   };
 
   const applyFilter = () => {
+    if (minPrice !== '' && maxPrice !== '' && minPrice > maxPrice) {
+      setPriceError("გთხოვთ შეიყვანოთ ვალიდური რიცხვები");
+      return; // Prevent filter application if validation fails
+    }
+    if (minArea !== '' && maxArea !== '' && minArea > maxArea) {
+      setAreaError("გთხოვთ შეიყვანოთ ვალიდური რიცხვები");
+      return; // Prevent filter application if validation fails
+    }
+  
+    // Clear the error message if validation passes
+    setPriceError(null);
+    setAreaError(null)
+
     onFilter(selectedRegions, minPrice || undefined, maxPrice || undefined, minArea || undefined, maxArea || undefined, bedroomCount || undefined);
   };
 
@@ -157,6 +172,7 @@ const Filter = ({ onFilter }: FilterProps) => {
                       />
                       <span className="absolute right-[10px] top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm text-black" >₾</span>
                     </div>
+
                     {/* Quick Select for Minimum Price */}
                     <div className="flex flex-col">
                       <p className="font-medium text-black text-sm">მინ. ფასი</p>
@@ -177,6 +193,11 @@ const Filter = ({ onFilter }: FilterProps) => {
                       <span className="mt-2 cursor-pointer" onClick={() => setMaxPrice(300000)}>300,000 ₾</span>
                     </div>
                   </div>
+                  
+                  {priceError && (
+                      <p className="text-red-500 text-sm mt-2">{priceError}</p>
+                  )}
+
                   <div className="mt-4 flex justify-end">
                     <ButtonPrimary text="არჩევა" onClick={applyFilter} />
                   </div>
@@ -238,6 +259,11 @@ const Filter = ({ onFilter }: FilterProps) => {
                       <span className="mt-2 cursor-pointer" onClick={() => setMaxArea(300)}>300 მ²</span>
                     </div>
                   </div>
+
+                  {areaError && (
+                      <p className="text-red-500 text-sm mt-2">{areaError}</p>
+                  )}
+
                   <div className="mt-4 flex justify-end">
                     <ButtonPrimary text="არჩევა" onClick={applyFilter} />
                   </div>

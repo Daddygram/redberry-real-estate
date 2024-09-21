@@ -87,7 +87,7 @@ const AddListing = () => {
         setShowCityOptions(false);
     };
 
-    const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } = useFileUpload('listingImagePreview');
+    const { imagePreview, isPreviewVisible, handleFileChange, handleDelete, imageError } = useFileUpload('listingImagePreview');
     
     const handleAgentSelect = (agent: Agents) => {
         setSelectedAgent(agent.name);
@@ -331,7 +331,7 @@ const AddListing = () => {
                         </div>
                     )}
                 </div>
-                
+                {imageError && <p className="text-redPrimary text-sm">{imageError}</p>}
             </div>
 
             {/* agents */}

@@ -21,7 +21,7 @@ const AgentModal: FC<AgentModalProps> = ({
 
   const { register: registerAgent, handleSubmit: handleAgentSubmit, control: agentControl, setValue: setAgentValue, errors: agentErrors, isSubmitted: isAgentSubmitted, onSubmit: onAgentSubmit } = useFormLogic<Agents>('agents', setOpenModal);
   const agentFormValues = useWatch({ control: agentControl })
-  const { imagePreview: agentImagePreview, isPreviewVisible: isAgentPreviewVisible, handleFileChange: handleAgentFileChange, handleDelete: handleAgentDelete } = useFileUpload('agentImagePreview');
+  const { imagePreview: agentImagePreview, isPreviewVisible: isAgentPreviewVisible, handleFileChange: handleAgentFileChange, handleDelete: handleAgentDelete, imageError } = useFileUpload('agentImagePreview');
 
 
     // Load saved form data from local storage
@@ -158,7 +158,7 @@ const AgentModal: FC<AgentModalProps> = ({
                   ტელეფონის ნომერი *
                 </label>
                 <input
-                  {...registerAgent('phone', { required: true, pattern: /^[0-9]+$/ })}
+                  {...registerAgent('phone', { required: true, pattern: /^5[0-9]{8}$/})}
                   type="text"
                   id="phone"
                   className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${
@@ -252,6 +252,7 @@ const AgentModal: FC<AgentModalProps> = ({
                   </div>
                 )}
               </div>
+                {imageError && <p className="text-redPrimary text-sm">{imageError}</p>}
             </div>
 
             {/* buttons */}
